@@ -9,7 +9,8 @@ export default function MapEmbed({
   return (
     <section
       aria-label="Lokasi Acara Pernikahan"
-      className="relative mt-16 px-6 py-12 bg-zinc-900/80 backdrop-blur-sm rounded-lg max-w-4xl mx-auto shadow-xl border border-zinc-700"
+      className="relative mt-12 mx-auto max-w-4xl px-6 py-12 bg-[#101010]"
+      style={{ maxWidth: '900px' }} // optional max width biar gak terlalu lebar
     >
       <h2 className="text-center text-3xl font-serif text-white mb-8 drop-shadow-md">
         Lokasi Acara
@@ -35,19 +36,30 @@ export default function MapEmbed({
         />
       </motion.div>
 
-      <div className="text-center mt-8">
+      <div className="flex flex-col items-center mt-8 gap-2">
         <a
           href={mapDirectionsUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center py-3 px-6 bg-zinc-700 text-white font-semibold rounded-md shadow-lg hover:bg-zinc-600 transition-all duration-200"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0L6.343 16.657m10.314-10.314L13.414 3.1a1.998 1.998 0 00-2.828 0L6.343 6.343m10.314 10.314A10.027 10.027 0 0018 9c0-5.523-4.477-10-10-10S-2 3.477-2 9c0 2.22-.796 4.307-2.203 5.922L12 22l4.828-4.828z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0L6.343 16.657m10.314-10.314L13.414 3.1a1.998 1.998 0 00-2.828 0L6.343 6.343m10.314 10.314A10.027 10.027 0 0018 9c0-5.523-4.477-10-10-10S-2 3.477-2 9c0 2.22-.796 4.307-2.203 5.922L12 22l4.828-4.828z"
+            />
           </svg>
           Buka di Google Maps
         </a>
-        <p className="mt-4 text-sm text-zinc-400">
+        <p className="text-sm text-zinc-400 text-center">
           (Klik tombol di atas untuk membuka peta di aplikasi Google Maps)
         </p>
       </div>

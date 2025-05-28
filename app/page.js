@@ -5,7 +5,6 @@ import CountdownTimer from '../components/CountdownTimer';
 import Gallery from '../components/Gallery';
 import RSVPForm from '../components/RSVPForm';
 import WishesForm from '../components/WishesForm';
-import WishesList from '../components/WishesList';
 import Footer from '../components/Footer';
 import MapEmbed from '@/components/MapEmbed';
 

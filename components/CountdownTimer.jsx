@@ -2,8 +2,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
-const startDate = new Date('2025-10-01T00:00:00');
-const targetDate = new Date('2025-10-12T00:00:00');
+// Ganti tanggal sesuai kebutuhan
+const startDate = new Date('2025-05-25T00:00:00');
+const targetDate = new Date('2025-08-28T00:00:00');
 
 const formatNumber = (num) => String(num).padStart(2, '0');
 
@@ -45,7 +46,7 @@ export default function CountdownTimer() {
   if (!mounted) return null;
 
   return (
-    <section className="w-full px-6 py-16 flex flex-col items-center justify-center bg-[#0c0c0c] text-white relative overflow-hidden">
+    <section className="w-full px-6 py-16 flex flex-col items-center justify-center bg-[#101010] text-white relative overflow-hidden">
       {/* Animated Backgrounds */}
       <motion.div
         className="absolute left-1/3 top-0 w-64 h-64 bg-purple-400/10 blur-3xl rounded-full z-0"
@@ -94,7 +95,7 @@ export default function CountdownTimer() {
       )}
 
       <div className="mt-8 w-full max-w-md relative z-10">
-        <div 
+        <div
           role="progressbar"
           aria-valuenow={progress}
           aria-valuemin="0"

@@ -51,10 +51,10 @@ export default function Gallery({
   return (
     <section
       aria-label="Galeri Prewedding"
-      className="relative mt-16 px-6 py-12 max-w-6xl mx-auto bg-[#101010]/50 backdrop-blur-lg rounded-2xl overflow-hidden"
+      className="relative mt-16 px-6 pt-10 pb-6 max-w-6xl mx-auto bg-[#101010]/50 backdrop-blur-lg rounded-2xl overflow-hidden flex flex-col items-center"
     >
       {/* Gradient border */}
-      <div className="absolute inset-0 pointer-events-none rounded-2xl border-2 border-gradient-to-br from-primary to-secondary opacity-30" />
+      <div className="absolute inset-0 pointer-events-none m-2 rounded-2xl border-2 border-gradient-to-br from-primary to-secondary opacity-30" />
 
       {/* Floating accents */}
       <motion.div
@@ -72,7 +72,7 @@ export default function Gallery({
         Galeri Kami
       </h2>
 
-      <div className={`${containerClass} relative z-10`}>
+      <div className={`${containerClass} relative z-10 w-full`}>
         {shuffled.map((src, idx) => (
           <motion.div
             key={idx}
@@ -88,7 +88,7 @@ export default function Gallery({
               alt={`Galeri ${idx + 1}`}
               width={400}
               height={300}
-              className="object-cover w-full h-auto transition-transform duration-300"
+              className="object-cover w-full h-full transition-transform duration-300"
               loading="lazy"
             />
             <motion.div

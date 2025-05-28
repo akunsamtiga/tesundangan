@@ -1,33 +1,36 @@
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
-export default function RSVPForm({ onSubmit }) {
+export default function RSVPForm() {
   const [form, setForm] = useState({
     name: '',
     guests: 1,
     attending: 'yes',
   });
   const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState(null); // 'null', 'success', 'error'
+  const [status, setStatus] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prevForm) => ({ ...prevForm, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    setStatus(null); // Reset status before new submission
-
+    setStatus(null);
     try {
-      // Simulate API call or external submission
-      await onSubmit?.(form);
-      setForm({ name: '', guests: 1, attending: 'yes' }); // Clear form on success
+      await addDoc(collection(db, 'rsvps'), {
+        ...form,
+        guests: Number(form.guests),
+        createdAt: serverTimestamp(),
+      });
+      setForm({ name: '', guests: 1, attending: 'yes' });
       setStatus('success');
-    } catch (err) {
-      console.error('RSVP submission error:', err); // Log the error for debugging
+    } catch {
       setStatus('error');
     } finally {
       setSubmitting(false);
@@ -35,156 +38,110 @@ export default function RSVPForm({ onSubmit }) {
   };
 
   return (
-    <section
-      aria-labelledby="rsvp-heading"
-      className="mt-16 px-6 py-12 bg-zinc-900/80 backdrop-blur-sm rounded-lg max-w-lg mx-auto shadow-xl border border-zinc-700" // Lebih gelap, border halus
-    >
-      <h2
-        id="rsvp-heading"
-        className="text-center text-3xl font-serif text-white mb-8 drop-shadow-md"
-      >
-        Konfirmasi Kehadiran
-      </h2>
+    <div className="my-20 flex items-center justify-center bg-[#101010] p-4">
+      <section className="bg-zinc-800 rounded-lg p-8 max-w-md w-full shadow-lg border border-zinc-700">
+        <h2 className="text-white text-3xl font-serif mb-6 text-center drop-shadow-md">
+          Konfirmasi Kehadiran
+        </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Nama */}
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-zinc-300 mb-2" // Warna teks label
-          >
-            Nama Lengkap Anda <span className="text-red-400">*</span>
-          </label>
-          <motion.input
-            whileFocus={{ scale: 1.01, boxShadow: '0 0 0 3px rgba(113, 113, 122, 0.5)' }} // Glow abu-abu
-            transition={{ type: 'spring', stiffness: 300 }}
-            type="text"
-            id="name"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            aria-required="true"
-            className="w-full p-3 rounded-md bg-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600 transition-all duration-200 border border-zinc-700" // Input lebih gelap
-            placeholder="Contoh: Budi Susanto"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="name"
+              className="block mb-2 text-sm font-medium text-zinc-300"
+            >
+              Nama Lengkap Anda <span className="text-red-400">*</span>
+            </label>
+            <motion.input
+              whileFocus={{ scale: 1.02, boxShadow: '0 0 8px rgba(255,255,255,0.4)' }}
+              transition={{ type: 'spring', stiffness: 300 }}
+              type="text"
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="w-full p-3 rounded-md bg-zinc-700 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+              placeholder="Contoh: Budi Susanto"
+            />
+          </div>
 
-        {/* Jumlah Tamu */}
-        <div>
-          <label
-            htmlFor="guests"
-            className="block text-sm font-medium text-zinc-300 mb-2"
-          >
-            Jumlah Tamu (termasuk Anda) <span className="text-red-400">*</span>
-          </label>
-          <motion.input
-            whileFocus={{ scale: 1.01, boxShadow: '0 0 0 3px rgba(113, 113, 122, 0.5)' }} // Glow abu-abu
-            transition={{ type: 'spring', stiffness: 300 }}
-            type="number"
-            id="guests"
-            name="guests"
-            min="1"
-            max="10"
-            value={form.guests}
-            onChange={handleChange}
-            required
-            aria-required="true"
-            className="w-full p-3 rounded-md bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-zinc-600 transition-all duration-200 border border-zinc-700" // Input lebih gelap
-            aria-describedby="guest-help-text"
-          />
-          <p id="guest-help-text" className="mt-1 text-xs text-zinc-400">
-            Maksimal 10 tamu per konfirmasi.
-          </p>
-        </div>
+          <div>
+            <label
+              htmlFor="guests"
+              className="block mb-2 text-sm font-medium text-zinc-300"
+            >
+              Jumlah Tamu (termasuk Anda) <span className="text-red-400">*</span>
+            </label>
+            <motion.input
+              whileFocus={{ scale: 1.02, boxShadow: '0 0 8px rgba(255,255,255,0.4)' }}
+              transition={{ type: 'spring', stiffness: 300 }}
+              type="number"
+              id="guests"
+              name="guests"
+              min="1"
+              max="10"
+              value={form.guests}
+              onChange={handleChange}
+              required
+              className="w-full p-3 rounded-md bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-zinc-500"
+            />
+          </div>
 
-        {/* Kehadiran */}
-        <fieldset className="space-y-3">
-          <legend className="text-sm font-medium text-zinc-300">
-            Apakah Anda akan hadir? <span className="text-red-400">*</span>
-          </legend>
-          <div className="flex flex-col sm:flex-row gap-4">
-            {['yes', 'no'].map((opt) => (
-              <label
-                key={opt}
-                htmlFor={`attending-${opt}`}
-                className="inline-flex items-center gap-2 cursor-pointer"
-              >
+          <fieldset>
+            <legend className="mb-3 text-sm font-medium text-zinc-300">
+              Apakah Anda akan hadir? <span className="text-red-400">*</span>
+            </legend>
+            <div className="flex gap-6">
+              <label className="inline-flex items-center cursor-pointer">
                 <input
                   type="radio"
-                  id={`attending-${opt}`}
                   name="attending"
-                  value={opt}
-                  checked={form.attending === opt}
+                  value="yes"
+                  checked={form.attending === 'yes'}
                   onChange={handleChange}
                   required
-                  className="accent-zinc-500 h-4 w-4" // Accent warna abu-abu
+                  className="accent-zinc-500"
                 />
-                <span className="text-zinc-200 capitalize select-none">
-                  {opt === 'yes' ? 'Ya, saya akan hadir' : 'Tidak bisa hadir'}
-                </span>
+                <span className="ml-2 text-zinc-200">Ya, saya akan hadir</span>
               </label>
-            ))}
-          </div>
-        </fieldset>
+              <label className="inline-flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="attending"
+                  value="no"
+                  checked={form.attending === 'no'}
+                  onChange={handleChange}
+                  required
+                  className="accent-zinc-500"
+                />
+                <span className="ml-2 text-zinc-200">Tidak bisa hadir</span>
+              </label>
+            </div>
+          </fieldset>
 
-        {/* Submit */}
-        <motion.button
-          type="submit"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
-          disabled={submitting}
-          className="w-full py-3 bg-zinc-700 text-white font-semibold rounded-md shadow-lg hover:bg-zinc-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" // Tombol abu-abu
-        >
-          {submitting ? (
-            <>
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              Mengirim...
-            </>
-          ) : (
-            'Kirim Konfirmasi Kehadiran'
-          )}
-        </motion.button>
-      </form>
+          <motion.button
+            type="submit"
+            disabled={submitting}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full py-3 bg-zinc-700 text-white rounded-md font-semibold shadow-lg hover:bg-zinc-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          >
+            {submitting ? 'Mengirim...' : 'Kirim Konfirmasi Kehadiran'}
+          </motion.button>
+        </form>
 
-      {/* Status Message */}
-      {status === 'success' && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 text-center text-green-400 font-medium bg-green-900/30 p-3 rounded-md border border-green-700" // Pesan sukses
-        >
-          Terima kasih banyak! Konfirmasi kehadiran Anda sudah tercatat. Kami tidak sabar bertemu dengan Anda!
-        </motion.p>
-      )}
-      {status === 'error' && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 text-center text-red-400 font-medium bg-red-900/30 p-3 rounded-md border border-red-700" // Pesan error
-        >
-          Maaf, terjadi kesalahan saat mengirim konfirmasi Anda. Silakan coba lagi nanti atau hubungi kami secara langsung.
-        </motion.p>
-      )}
-    </section>
+        {status === 'success' && (
+          <p className="mt-6 text-center text-green-400 bg-green-900/30 p-3 rounded border border-green-700">
+            Terima kasih! Konfirmasi Anda sudah tercatat.
+          </p>
+        )}
+        {status === 'error' && (
+          <p className="mt-6 text-center text-red-400 bg-red-900/30 p-3 rounded border border-red-700">
+            Terjadi kesalahan, silakan coba lagi.
+          </p>
+        )}
+      </section>
+    </div>
   );
 }
